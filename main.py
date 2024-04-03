@@ -4,10 +4,9 @@ from dotenv import load_dotenv
 
 
 #loading dotenv files
-load_dotenv()
+load_dotenv(override=True)
 
 bot_token = os.getenv('BOT_TOKEN')
-db_url = os.getenv('DB_URL')
 
 def main():
     bot = MyBot(bot_token)
