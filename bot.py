@@ -1,12 +1,19 @@
+import os
+from dotenv import load_dotenv
+#*Telegram imports
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters,CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+#*Classes
 from database.db import Database
-from dotenv import load_dotenv
-import os
-import re
+from regex.regex_processor import RegexProcessor
+from amocrm_integration.amo_integration import AmoCRM
 
-#loading dotenv files
 load_dotenv(override=True)
+
+amo_client_id=os.getenv('AMO_CLIENT_ID')
+amo_client_secret=os.getenv('AMO_CLIENT_SECRET')
+amo_redirect_url=os.getenv('AMO_REDIRECT_URL')
+amo_subdomain=os.getenv('AMO_SUBDOMAIN')
 
 
 db_url = os.getenv('DB_URL')
@@ -14,7 +21,8 @@ db_url = os.getenv('DB_URL')
 orders_approve = [[InlineKeyboardButton("Yes", callback_data='yes'),
             InlineKeyboardButton("No", callback_data='no')]]
 
-
+my_regex=RegexProcessor()
+my_amo=AmoCRM(amo_client_id,amo_client_secret,amo_subdomain,amo_redirect_url)
 
 class MyBot:
     def __init__(self, token):
@@ -35,42 +43,37 @@ class MyBot:
         if query.data == 'yes':           
             context.bot.send_message(chat_id=query.message.chat_id, text="You clicked Yes!")
         elif query.data == 'no':
-            context.bot.send_message(chat_id=query.message.chat_id, text="You clicked No!")
+            context.bot.send_message(chat_id=query.message.chat_id)
             
         context.bot.edit_message_text(chat_id=query.message.chat_id,
                                       message_id=query.message.message_id,
                                       text=query.message.text,
                                       reply_markup=None)
 
-
-
     def start(self, update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text="Бот онлайн.")
     
-    def extract_lead_ids(self, message_text):
-        pattern = r'#(\d+)|[;,/](\d+)'
-        matches = re.findall(pattern, message_text)
-        # Extract the IDs from the matches
-        lead_ids = [int(match[0]) if match[0] else int(match[1]) for match in matches]
-        return lead_ids
-        
+     
     def respond_to_mention(self, update, context):
         if self.username in update.message.text:
-            lead_ids = self.extract_lead_ids(update.message.text)
-            print(lead_ids)
+            lead_ids = my_regex.find_lead_ids(update.message.text)
+            orders = []
             if lead_ids:
-                orders = self.db_session.get_order_by_lead_id(lead_ids)
+                for lead_id in lead_ids:
+                    amo_lead=my_amo.get_lead_by_id(lead_id)
+                    if amo_lead :
+                        order = {'id': amo_lead.id, 'name': amo_lead.name}                    
+                        orders.append(order)
                 if orders:
-                    orders_approve_message = ""
                     for order in orders:
-                        orders_approve_message += f"Lead_id: {order.lead_id}, Info: {order.info}\n"
-                    order_approve_markup = InlineKeyboardMarkup(orders_approve)
-                    context.bot.send_message(chat_id=update.effective_chat.id, text=orders_approve_message,reply_markup=order_approve_markup,reply_to_message_id=update.message.message_id)
+                        orders_approve_message = ""
+                        orders_approve_message += f"Сделка: {order['id']}\n{order['name']}\n"
+                        order_approve_markup = InlineKeyboardMarkup(orders_approve)
+                        context.bot.send_message(chat_id=update.effective_chat.id, text=orders_approve_message,reply_markup=order_approve_markup,reply_to_message_id=update.message.message_id)
                 else:
-                    context.bot.send_message(chat_id=update.effective_chat.id, text="Заказы не найдены",reply_to_message_id=update.message.message_id)
+                    context.bot.send_message(chat_id=update.effective_chat.id, text=f"Заказ c {lead_id} не найден",reply_to_message_id=update.message.message_id)
             else:
                 context.bot.send_message(chat_id=update.effective_chat.id, text="Лид ID не определены",reply_to_message_id=update.message.message_id)
-
 
 
     def run(self):
@@ -81,8 +84,6 @@ class MyBot:
         self.dispatcher.add_handler(start_handler)
         self.dispatcher.add_handler(mention_handler)
         self.dispatcher.add_handler(button_handler)  
-
-
 
         self.updater.start_polling()
         self.updater.idle()

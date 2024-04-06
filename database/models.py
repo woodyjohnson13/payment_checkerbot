@@ -12,8 +12,10 @@ class Order(Base):
 
 
 class Payment(Base):
-    __tablename__ = 'payment'
+    __tablename__ = 'bank'
 
     id = Column(Integer, primary_key=True)
-    payment_amount = Column(Numeric(precision=10, scale=2))
-    lead_id = Column(Integer)
+    lead_id=Column(String)
+    date = Column(String)
+    amount = Column(String)
+    checking_account=Column(String)
