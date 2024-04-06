@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 class RegexProcessor:
     
@@ -49,4 +50,38 @@ class RegexProcessor:
             return matches
         else:
             return ['Лид ID не найдены']
+        
+    def process_paper_text(self, text):
+        result = {}
+        result['amount'] = self.find_amount_paper(text)
+        result['date'] = self.find_date_paper(text)
+        result['checking_account'] = self.find_checking_account_paper(text)
+        
+        if result['amount']:
+            return result
+        else:
+            return False
 
+    def process_card_text(self, text):
+        result = {}
+        result['amount'] = self.find_amount_card(text)
+        result['date'] = datetime.today().strftime('%d.%m.%Y')
+        result['checking_account'] = self.find_checking_account_card(text)
+        
+        if result['amount']:
+            return result
+        else:
+            return False
+        
+    def handle_text(self, text):
+        
+        pattern=r'MIR'
+        card = re.search(pattern, text)
+
+        if card:
+            paper_result = self.process_card_text(text)
+            return paper_result
+        else:
+            paper_result = self.process_paper_text(text)
+            return paper_result
+            

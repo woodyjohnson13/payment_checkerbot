@@ -18,9 +18,6 @@ amo_subdomain=os.getenv('AMO_SUBDOMAIN')
 
 db_url = os.getenv('DB_URL')
 
-orders_approve = [[InlineKeyboardButton("Yes", callback_data='yes'),
-            InlineKeyboardButton("No", callback_data='no')]]
-
 my_regex=RegexProcessor()
 my_amo=AmoCRM(amo_client_id,amo_client_secret,amo_subdomain,amo_redirect_url)
 
@@ -35,15 +32,19 @@ class MyBot:
         query = update.callback_query
         
         message_sender_id = query.message.reply_to_message.from_user.id
+        
+        # If the button click is not from the original message sender, ignore it
         if query.from_user.id != message_sender_id:
-            # If the button click is not from the original message sender, ignore it
             return
 
-
-        if query.data == 'yes':           
-            context.bot.send_message(chat_id=query.message.chat_id, text="You clicked Yes!")
-        elif query.data == 'no':
-            context.bot.send_message(chat_id=query.message.chat_id)
+        data = query.data.split(":")  # Splitting callback data to extract lead ID and name
+        if len(data) == 5 and data[0] == 'yes':
+            lead_id, amount,checking_account,date = data[1], data[2],data[3],data[4]
+            self.db_session.create_payment(lead_id,date,amount,checking_account)
+            context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")
+        elif len(data) == 3 and data[0] == 'no':
+            lead_id,lead_name=data[1],data[2]
+            context.bot.send_message(chat_id=query.message.chat_id,text=f"Сделка {lead_id} \n {lead_name} \nне подошла.")
             
         context.bot.edit_message_text(chat_id=query.message.chat_id,
                                       message_id=query.message.message_id,
@@ -56,6 +57,8 @@ class MyBot:
      
     def respond_to_mention(self, update, context):
         if self.username in update.message.text:
+            
+            lead_data=my_regex.handle_text(update.message.text)
             lead_ids = my_regex.find_lead_ids(update.message.text)
             orders = []
             if lead_ids:
@@ -68,7 +71,10 @@ class MyBot:
                     for order in orders:
                         orders_approve_message = ""
                         orders_approve_message += f"Сделка: {order['id']}\n{order['name']}\n"
-                        order_approve_markup = InlineKeyboardMarkup(orders_approve)
+                        callback_data_yes = f"yes:{order['id']}:{lead_data['amount']}:{lead_data['checking_account']}:{lead_data['date']}"
+                        callback_data_no = f"no:{order['id']}:{order['name']}"
+                        order_approve_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Да", callback_data=callback_data_yes),
+                                                                      InlineKeyboardButton("Нет", callback_data='no')]])
                         context.bot.send_message(chat_id=update.effective_chat.id, text=orders_approve_message,reply_markup=order_approve_markup,reply_to_message_id=update.message.message_id)
                 else:
                     context.bot.send_message(chat_id=update.effective_chat.id, text=f"Заказ c {lead_id} не найден",reply_to_message_id=update.message.message_id)
