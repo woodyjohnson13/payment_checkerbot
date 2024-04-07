@@ -2,7 +2,9 @@ amocrm-api==2.6.1
 anyio==4.3.0
 APScheduler==3.6.3
 certifi==2024.2.2
+cffi==1.16.0
 charset-normalizer==3.3.2
+cryptography==42.0.5
 greenlet==3.0.3
 h11==0.14.0
 httpcore==1.0.5
@@ -10,6 +12,7 @@ httpx==0.27.0
 idna==3.6
 mysql-connector-python==8.3.0
 mysqlclient==2.2.4
+pycparser==2.22
 PyJWT==2.8.0
 python-dotenv==1.0.1
 python-telegram-bot==13.5
