@@ -41,6 +41,10 @@ class MyBot:
         if len(data) == 5 and data[0] == 'yes':
             lead_id, amount,checking_account,date = data[1], data[2],data[3],data[4]
             self.db_session.create_payment(lead_id,date,amount,checking_account)
+            my_lead=my_amo.get_lead_by_id(lead_id)
+            my_lead.payment=True
+            my_lead.payment_date=my_amo.date_formatter(date)
+            my_lead.save()
             context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")
         elif len(data) == 3 and data[0] == 'no':
             lead_id,lead_name=data[1],data[2]
@@ -72,7 +76,7 @@ class MyBot:
                         orders_approve_message = ""
                         orders_approve_message += f"Сделка: {order['id']}\n{order['name']}\n"
                         callback_data_yes = f"yes:{order['id']}:{lead_data['amount']}:{lead_data['checking_account']}:{lead_data['date']}"
-                        callback_data_no = f"no:{order['id']}:{order['name']}"
+                        # callback_data_no = f"no:{order['id']}:{order['name']}"
                         order_approve_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Да", callback_data=callback_data_yes),
                                                                       InlineKeyboardButton("Нет", callback_data='no')]])
                         context.bot.send_message(chat_id=update.effective_chat.id, text=orders_approve_message,reply_markup=order_approve_markup,reply_to_message_id=update.message.message_id)

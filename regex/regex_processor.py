@@ -44,10 +44,10 @@ class RegexProcessor:
             return 'Сумма сделки не найдена'
 
     def find_lead_ids(self, text):
-        pattern = r'\b(\d+)\b'
+        pattern = r'#(\d+)(?:[,;/](\d+))?' # Making the second group optional
         matches = re.findall(pattern, text)
         if matches:
-            return matches
+            return [match for groups in matches for match in groups if match]
         else:
             return ['Лид ID не найдены']
         
@@ -85,3 +85,5 @@ class RegexProcessor:
             paper_result = self.process_paper_text(text)
             return paper_result
             
+# regex=RegexProcessor()
+# print(regex.find_lead_ids('''@PyamentCheckBot  #23643310;23424 Евгений С.: MIR-8071 16:47 зачисление 1100р TINKOFF Баланс:'''))
