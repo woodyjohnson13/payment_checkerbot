@@ -52,7 +52,7 @@ class MyBot:
         elif len(data) == 3 and data[0] == 'no':
             lead_id,lead_name=data[1],data[2]
             context.bot.send_message(chat_id=query.message.chat_id,text=f"Сделка #{lead_id} \n {lead_name} \nне подошла.")
-            
+        print(query.message.chat_id)
         context.bot.delete_message(chat_id=query.message.chat_id, message_id=query.message.message_id)
 
     def start(self, update, context):
