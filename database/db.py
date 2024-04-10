@@ -17,10 +17,10 @@ class Database:
         def get_session(self):
             return self.Session()
                               
-        def create_payment(self,lead_id, date, amount, checking_account):
+        def create_payment(self,lead_id, date, amount, checking_account,payment_message,chat_id,reply_message):
             session = self.get_session()
             
-            payment = Payment(lead_id=lead_id, date=date, amount=amount, checking_account=checking_account)
+            payment = Payment(lead_id=lead_id, date=date, amount=amount, checking_account=checking_account,payment_message=payment_message,chat_id=chat_id,reply_message=reply_message,status=0)
             
             try:
                 session.add(payment)

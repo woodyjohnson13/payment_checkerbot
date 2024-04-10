@@ -33,9 +33,10 @@ class MyBot:
     
     def button_handers(self,update, context):
         query = update.callback_query
-        
+        chat_id=query.message.chat_id
+        payment_message=query.message.text
+        reply_message=query.message.reply_to_message.text
         message_sender_id = query.message.reply_to_message.from_user.id
-        
         # If the button click is not from the original message sender, ignore it
         if query.from_user.id != message_sender_id:
             return
@@ -43,7 +44,7 @@ class MyBot:
         data = query.data.split(":")  # Splitting callback data to extract lead ID and name
         if len(data) == 5 and data[0] == 'yes':
             lead_id, amount,checking_account,date = data[1], data[2],data[3],data[4]
-            self.db_session.create_payment(lead_id,date,amount,checking_account)
+            self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message)
             my_lead=my_amo.get_lead_by_id(lead_id)
             my_lead.payment=True
             my_lead.payment_date=my_amo.date_formatter(date)
@@ -52,7 +53,6 @@ class MyBot:
         elif len(data) == 3 and data[0] == 'no':
             lead_id,lead_name=data[1],data[2]
             context.bot.send_message(chat_id=query.message.chat_id,text=f"Сделка #{lead_id} \n {lead_name} \nне подошла.")
-        print(query.message.chat_id)
         context.bot.delete_message(chat_id=query.message.chat_id, message_id=query.message.message_id)
 
     def start(self, update, context):
