@@ -18,3 +18,12 @@ class Payment(Base):
     status=Column(Integer)
 
 
+class PaymentText(Base):
+    __tablename__ = 'payment_text'
+
+    id = Column(Integer, primary_key=True)
+    text=Column(String)
+    
+
+
+
