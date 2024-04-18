@@ -7,6 +7,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from database.db import Database
 from regex.regex_processor import RegexProcessor
 from amocrm_integration.amo_integration import AmoCRM
+import time
 
 load_dotenv(override=True)
 
@@ -48,7 +49,7 @@ class MyBot:
             self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message)
             #!Get rid of it, it throws error
             # self.db_session.delete_payment_text(payment_text_id)
-            
+            my_amo.change_payment_status_and_date(lead_id)
             #!This doesnt work for now
             # my_lead=my_amo.get_lead_by_id(lead_id)
             # my_lead.payment=1
@@ -73,7 +74,22 @@ class MyBot:
         lead_ids = my_regex.find_lead_ids(your_reply_text)
         orders = []
         if lead_data['amount'] != "Сумма сделки не найдена" and lead_data['date'] != 'Дата не найдена' and lead_data['checking_account'] != 'Расчетный счет не найден':
-            payment_text_id=self.db_session.create_payment_text(replied_message_text)
+            
+            
+            max_retries = 5
+            retries = 0
+            payment_text_id = None
+            while retries < max_retries:
+                payment_text_id = self.db_session.create_payment_text(replied_message_text)
+                if payment_text_id is not None:
+                    break
+                retries += 1
+                time.sleep(1)  # Wait for 1 second before retrying
+            if payment_text_id is None:
+                # Handle the case when payment_text_id is still None after max retries
+                return
+            
+            
             if lead_ids:
                     for lead_id in lead_ids:
                         amo_lead=my_amo.get_lead_by_id(lead_id)
@@ -90,16 +106,7 @@ class MyBot:
                                                                             InlineKeyboardButton("Нет", callback_data='no')]])
                                 
                                 context.bot.send_message(chat_id=update.effective_chat.id, text=orders_approve_message,reply_markup=order_approve_markup,reply_to_message_id=update.message.message_id)
-                    else:
-                            pass
-            else:
-                    pass
-        else:
-            pass
-
-
-    
-    
+     
     def run(self):
         start_handler = CommandHandler('start', self.start)
         button_handler = CallbackQueryHandler(self.button_handers)

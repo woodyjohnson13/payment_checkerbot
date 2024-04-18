@@ -6,6 +6,10 @@ import jwt
 import time
 from datetime import datetime
 import pytz
+import time
+from datetime import datetime
+
+
 
 
 
@@ -106,11 +110,61 @@ class AmoCRM:
         formatted_date = input_date_utc.strftime('%Y-%m-%dT%H:%M:%S%z')
         return formatted_date
 
+    def change_payment_status_and_date (self,lead_id):
+            with open(keys_directory+'/access_token.txt', "r") as f:
+                token = f.read().strip()
+            
+            url = 'https://propnevmo.amocrm.ru/private/api/v2/json/leads/set'
+            
+            payload =  {
+                    "request": {
+                        "leads": {
+                            "update": [
+                                {
+                                    "id": lead_id,
+                                    "last_modified":int(time.time()),
+                                    "custom_fields": [
+                                        {
+                                            "id": 181769,
+                                            "values": [
+                                                {"value": True}
+                                            ]
+                                        },
+                                        {
+                                            "id": 241225,
+                                            "values": [
+                                                {"value": datetime.now().strftime("%d.%m.%Y")}
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+
+            headers = {
+                'Content-Type': 'application/json',  # Set content type to JSON
+                'Authorization': f'Bearer {token}'  # Replace YOUR_TOKEN_HERE with your actual token
+            }
+            
+            response = requests.post(url, json=payload, headers=headers)
+
+            if response.status_code == 200:
+                print("POST request was successful!")
+                print("Response:")
+                print(response.json())
+                return 200# Print the response content as JSON
+            else:
+                print("POST request failed with status code:", response.status_code)
+                return 400
 
 
 
 
 
+
+#!Logic for reseting token
 # tokens.default_token_manager(
 #     client_id=amo_client_id,
 #     client_secret=amo_client_secret,
