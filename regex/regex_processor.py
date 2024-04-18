@@ -12,7 +12,7 @@ class RegexProcessor:
             return 'Сумма сделки не найдена'
         
     def find_date_paper(self,text):
-        pattern=r'от\s?(\d\d\.\d\d\.\d\d\d\d)г'
+        pattern=r'(\d\d\d\d-\d\d-\d\d)'
         match = re.search(pattern, text)
         if match:
             return match.group(1)
@@ -28,7 +28,7 @@ class RegexProcessor:
             return 'Расчетный счет не найден'
 
     def find_amount_card(self,text):
-        pattern=r'(\d+)р'
+        pattern = r'(\d{1,3}(?:[\s\d]*\d{3})*)(?:[\s]*)(?:р)'
         match = re.search(pattern, text)
         if match:
             return match.group(1)
@@ -44,7 +44,7 @@ class RegexProcessor:
             return 'Сумма сделки не найдена'
 
     def find_lead_ids(self, text):
-        pattern = r'(\d+)(?:[,;/](\d+))?' # Making the second group optional
+        pattern = r'(\d+)(?:[\s,;/](\d+))?' # Making the second group optional
         matches = re.findall(pattern, text)
         if matches:
             return [match for groups in matches for match in groups if match]
@@ -75,7 +75,7 @@ class RegexProcessor:
         
     def handle_text(self, text):
         
-        pattern=r'MIR'
+        pattern=r'Баланс:'
         card = re.search(pattern, text)
 
         if card:
@@ -85,3 +85,6 @@ class RegexProcessor:
             paper_result = self.process_paper_text(text)
             return paper_result
             
+
+regex=RegexProcessor()
+

@@ -1,0 +1,112 @@
+{
+    "id": 6622277,
+    "name": "линкольн 1993 года, замена рукава, Таджикистан",
+    "price": 8000,
+    "responsible_user_id": 1505836,
+    "group_id": 0,
+    "status_id": 143,
+    "pipeline_id": 692917,
+    "loss_reason_id": null,
+    "created_by": 1540261,
+    "updated_by": 0,
+    "created_at": 1520390476,
+    "updated_at": 1713357550,
+    "closed_at": 1523094966,
+    "closest_task_at": null,
+    "is_deleted": false,
+    "custom_fields_values": [
+        {
+            "field_id": 187623,
+            "field_name": "roistat",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "99271"
+                }
+            ]
+        },
+        {
+            "field_id": 187641,
+            "field_name": "Маркетинговый источник",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "сайт"
+                }
+            ]
+        },
+        {
+            "field_id": 181759,
+            "field_name": "Вид услуги",
+            "field_code": null,
+            "field_type": "select",
+            "values": [
+                {
+                    "value": "Ремонт детали клиента",
+                    "enum_id": 396497,
+                    "enum_code": null
+                }
+            ]
+        },
+        {
+            "field_id": 181779,
+            "field_name": "Город доставки amo",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Таджикистан"
+                }
+            ]
+        },
+        {
+            "field_id": 203135,
+            "field_name": "Причина отказа",
+            "field_code": null,
+            "field_type": "select",
+            "values": [
+                {
+                    "value": "Ищет наличие у себя в городе",
+                    "enum_id": 430987,
+                    "enum_code": null
+                }
+            ]
+        },
+        {
+            "field_id": 181769,
+            "field_name": "Оплата поступила",
+            "field_code": null,
+            "field_type": "checkbox",
+            "values": [
+                {
+                    "value": true
+                }
+            ]
+        },
+        {
+            "field_id": 241225,
+            "field_name": "Дата Оплаты",
+            "field_code": null,
+            "field_type": "date",
+            "values": [
+                {
+                    "value": 1713301200
+                }
+            ]
+        }
+    ],
+    "score": null,
+    "account_id": 15025351,
+    "labor_cost": null,
+    "_links": {
+        "self": {
+            "href": "https://propnevmo.amocrm.ru/api/v4/leads/6622277?page=1&limit=250"
+        }
+    },
+    "_embedded": {
+        "tags": [],
+        "companies": []
+    }
+}

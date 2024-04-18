@@ -1,0 +1,262 @@
+{
+    "id": 23662318,
+    "name": "ф15 комп, Сергей Ялта СРОЧНО",
+    "price": 20000,
+    "responsible_user_id": 10579497,
+    "group_id": 0,
+    "status_id": 17018206,
+    "pipeline_id": 692917,
+    "loss_reason_id": null,
+    "created_by": 0,
+    "updated_by": 0,
+    "created_at": 1713348116,
+    "updated_at": 1713369002,
+    "closed_at": null,
+    "closest_task_at": 1713387540,
+    "is_deleted": false,
+    "custom_fields_values": [
+        {
+            "field_id": 181779,
+            "field_name": "Город доставки amo",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Ялта"
+                }
+            ]
+        },
+        {
+            "field_id": 251907,
+            "field_name": "roistat",
+            "field_code": "ROISTAT",
+            "field_type": "tracking_data",
+            "values": [
+                {
+                    "value": "avito-пневмо_краснодар_краснодар-запчасти-пневма"
+                }
+            ]
+        },
+        {
+            "field_id": 365254,
+            "field_name": "сайт",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "avito.ru"
+                }
+            ]
+        },
+        {
+            "field_id": 187623,
+            "field_name": "roistat",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "avito-пневмо_краснодар_краснодар-запчасти-пневма"
+                }
+            ]
+        },
+        {
+            "field_id": 362604,
+            "field_name": "Не менять ответственного",
+            "field_code": null,
+            "field_type": "checkbox",
+            "values": [
+                {
+                    "value": true
+                }
+            ]
+        },
+        {
+            "field_id": 361350,
+            "field_name": "Нарекание клиента",
+            "field_code": null,
+            "field_type": "multiselect",
+            "values": [
+                {
+                    "value": "Спускает",
+                    "enum_id": 533260,
+                    "enum_code": null
+                }
+            ]
+        },
+        {
+            "field_id": 226303,
+            "field_name": "Способ оплаты",
+            "field_code": null,
+            "field_type": "select",
+            "values": [
+                {
+                    "value": "Карта",
+                    "enum_id": 474531,
+                    "enum_code": null
+                }
+            ]
+        },
+        {
+            "field_id": 181759,
+            "field_name": "Вид услуги",
+            "field_code": null,
+            "field_type": "select",
+            "values": [
+                {
+                    "value": "Отправка нашей",
+                    "enum_id": 419251,
+                    "enum_code": null
+                }
+            ]
+        },
+        {
+            "field_id": 226191,
+            "field_name": "Товары",
+            "field_code": null,
+            "field_type": "checkbox",
+            "values": [
+                {
+                    "value": true
+                }
+            ]
+        },
+        {
+            "field_id": 228681,
+            "field_name": "Тип товара",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Компрессоры пневмоподвески"
+                }
+            ]
+        },
+        {
+            "field_id": 228585,
+            "field_name": "Товар для статистики",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Компрессор пневмоподвески (Wabco II) BMW X5 (F15) 2013-2020 Восстановленный"
+                }
+            ]
+        },
+        {
+            "field_id": 248354,
+            "field_name": "Нов/Вост",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Восстановленный"
+                }
+            ]
+        },
+        {
+            "field_id": 228679,
+            "field_name": "Марка",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Компрессоры пневмоподвески"
+                }
+            ]
+        },
+        {
+            "field_id": 231739,
+            "field_name": "Регион amo",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "Крымская обл."
+                }
+            ]
+        },
+        {
+            "field_id": 363046,
+            "field_name": "Упаковано",
+            "field_code": null,
+            "field_type": "checkbox",
+            "values": [
+                {
+                    "value": true
+                }
+            ]
+        },
+        {
+            "field_id": 202355,
+            "field_name": "Марка авто",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "BMW"
+                }
+            ]
+        },
+        {
+            "field_id": 202357,
+            "field_name": "Модель",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "X5 III (F15) 2013-2018"
+                }
+            ]
+        },
+        {
+            "field_id": 248430,
+            "field_name": "guidmark",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "96622590-ccf0-11e9-b7f2-8837e8c39bf6"
+                }
+            ]
+        },
+        {
+            "field_id": 248432,
+            "field_name": "guidmodel",
+            "field_code": null,
+            "field_type": "text",
+            "values": [
+                {
+                    "value": "d32e021f-cd73-11e9-b7f2-8837e8c39bf6"
+                }
+            ]
+        }
+    ],
+    "score": null,
+    "account_id": 15025351,
+    "labor_cost": null,
+    "_links": {
+        "self": {
+            "href": "https://propnevmo.amocrm.ru/api/v4/leads/23662318?page=1&limit=250"
+        }
+    },
+    "_embedded": {
+        "tags": [
+            {
+                "id": 181079,
+                "name": "i2crm",
+                "color": null
+            },
+            {
+                "id": 320854,
+                "name": "Нет_залога",
+                "color": null
+            },
+            {
+                "id": 326786,
+                "name": "I2CRM (WhatsApp)",
+                "color": null
+            }
+        ],
+        "companies": []
+    }
+}
