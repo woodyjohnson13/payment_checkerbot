@@ -1,7 +1,7 @@
 import gspread
 import os
 from google.oauth2.service_account import Credentials
-
+import re
 current_directory = os.path.dirname(os.path.abspath(__file__))
 credential = os.path.join(current_directory, "credentials.json")
 
@@ -29,7 +29,6 @@ class GoogleSheet:
         
     def add_row(self, sheet, data):
         last_row = len(sheet.get_all_values())
-        print(data)
         for column, value in data.items():
             column_index=self.convert_to_column_number(column)
             if column_index:
@@ -55,8 +54,16 @@ class GoogleSheet:
 
     
     
-    def append_to_cell(self, sheet, value, column, row_number):
+    def append_to_cell(self, sheet, value, column, row_number,partly):
         column_index = self.convert_to_column_number(column)
+        
+        if partly==1:
+            payment_fulfill='частично оплачено'
+        else:
+            payment_fulfill='оплачено'
+        
+        value=value+" "+ payment_fulfill
+        
         if column_index:
                 try:
                     # Get the current content of the cell

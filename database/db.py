@@ -110,10 +110,10 @@ class Database:
                             SELECT *
                             FROM bot_transfer
                             WHERE chat_id = %s
-                            AND key_phrase='Неизвестно'
+                            AND %s LIKE CONCAT('%', key_phrase, '%')
                             LIMIT 1
                         """
-                        cursor.execute(query, (chat_id,))
+                        cursor.execute(query, (chat_id,message))
                         mapping = cursor.fetchone()
 
                         if mapping:

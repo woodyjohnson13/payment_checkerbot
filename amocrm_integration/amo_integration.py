@@ -110,9 +110,22 @@ class AmoCRM:
         formatted_date = input_date_utc.strftime('%Y-%m-%dT%H:%M:%S%z')
         return formatted_date
 
-    def change_payment_status_and_date (self,lead_id):
+    def change_payment_status_and_date (self,lead_id,partly):
             with open(keys_directory+'/access_token.txt', "r") as f:
                 token = f.read().strip()
+                
+            order=self.get_lead_by_id(lead_id)
+            
+            if partly==1:
+                payment_fulfill='частично оплачено'
+            else:
+                payment_fulfill='оплачено'
+            
+            if "частично оплачено" in order.name:
+                name = order.name.replace("частично оплачено", "оплачено")
+            else:
+                name=order.name+","+payment_fulfill
+
             
             url = 'https://propnevmo.amocrm.ru/private/api/v2/json/leads/set'
             
@@ -123,6 +136,7 @@ class AmoCRM:
                                 {
                                     "id": lead_id,
                                     "last_modified":int(time.time()),
+                                    "name":name,
                                     "custom_fields": [
                                         {
                                             "id": 181769,

@@ -57,31 +57,33 @@ class MyBot:
                 row=self.google_sheets.get_row_number_by_cell_content(my_sheet,payment_message,mapping['payment_message'])
                 
                 if row:
-                    self.google_sheets.append_to_cell(my_sheet,reply_message,lead_id,row)
+                    self.google_sheets.append_to_cell(my_sheet,lead_id,mapping['reply_message'],row)
                     self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=1)
                     self.db_session.process_lead_id(lead_id,partly=0)
+                    my_amo.change_payment_status_and_date(lead_id,partly=0)
                     context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")
-
-
                 else:
                     row_data = {
                         mapping['date_today']:datetime.datetime.now().strftime('%d.%m.%Y'),
                         mapping['payment_column']:amount,
                         mapping['payment_date']: date,
                         mapping['payment_message']: payment_message,
-                        mapping['reply_message']: reply_message,
+                        mapping['reply_message']: lead_id,
                         mapping['paymentmethod']:mapping['paymentmethod_name']}
                     self.google_sheets.add_row(my_sheet,row_data)
                     self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=1)
                     self.db_session.process_lead_id(lead_id,partly=0)
-                    self.db_session.process_lead_id(lead_id,partly=0)
+                    my_amo.change_payment_status_and_date(lead_id,partly=0)
                     context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")
-
             else:
-                self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=0)
+                self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=1)
                 self.db_session.process_lead_id(lead_id,partly=0)
-                self.db_session.process_lead_id(lead_id,partly=0)
-                my_amo.change_payment_status_and_date(lead_id)
+                mapping=self.db_session.get_mapping(payment_message,chat_id)
+                sheet=self.db_session.get_sheet_id(chat_id)
+                my_sheet=self.google_sheets.create_sheet(sheet["sheet_id"],"Доход")
+                row=self.google_sheets.get_row_number_by_cell_content(my_sheet,payment_message,mapping['payment_message'])
+                self.google_sheets.append_to_cell(my_sheet,lead_id,mapping['reply_message'],row,partly=0)
+                my_amo.change_payment_status_and_date(lead_id,partly=0)
                 context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")    
                    
         if len(data)==1 and data[0]=='no':
@@ -103,9 +105,8 @@ class MyBot:
                     self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=0)
                     self.db_session.process_lead_id(lead_id,partly=1)
                     self.db_session.process_lead_id(lead_id,partly=1)
+                    my_amo.change_payment_status_and_date(lead_id,partly=1)
                     context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")
-
-
                 else:
                     row_data = {
                         mapping['date_today']:datetime.datetime.now().strftime('%d.%m.%Y'),
@@ -117,15 +118,20 @@ class MyBot:
                     self.google_sheets.add_row(my_sheet,row_data)
                     self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=1)
                     self.db_session.process_lead_id(lead_id,partly=1)
-                    self.db_session.process_lead_id(lead_id,partly=1)
+                    my_amo.change_payment_status_and_date(lead_id,partly=1)
                     context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")
 
             else:
                 self.db_session.create_payment(lead_id,date,amount,checking_account,payment_message,chat_id,reply_message,status=1)
                 self.db_session.process_lead_id(lead_id,partly=1)
-                my_amo.change_payment_status_and_date(lead_id)
+                mapping=self.db_session.get_mapping(payment_message,chat_id)
+                sheet=self.db_session.get_sheet_id(chat_id)
+                my_sheet=self.google_sheets.create_sheet(sheet["sheet_id"],"Доход")
+                row=self.google_sheets.get_row_number_by_cell_content(my_sheet,payment_message,mapping['payment_message'])
+                self.google_sheets.append_to_cell(my_sheet,lead_id,mapping['reply_message'],row,partly=1)
+                my_amo.change_payment_status_and_date(lead_id,partly=1)
                 context.bot.send_message(chat_id=query.message.chat_id, text=f"Оплата внесена для сделки: {lead_id}\nВ размере: {amount}р\nРасчетный счет: {checking_account}\nДата: {date}")    
-        
+
         context.bot.delete_message(chat_id=query.message.chat_id, message_id=query.message.message_id)
 
         
@@ -135,7 +141,7 @@ class MyBot:
     
     def respond_to_reply(self, update, context):
         my_chat_id=update.effective_chat.id
-        print(self.db_session.get_avaliable_chats())
+        
         if str(my_chat_id) in self.db_session.get_avaliable_chats():
             #text of the message i reply to
             replied_message_text = update.message.reply_to_message.text
@@ -148,6 +154,21 @@ class MyBot:
             orders = []
             if lead_data['amount'] != "Сумма сделки не найдена" and lead_data['date'] != 'Дата не найдена' and lead_data['checking_account'] != 'Расчетный счет не найден':
                 
+                mapping=self.db_session.get_mapping(replied_message_text,my_chat_id)
+                sheet=self.db_session.get_sheet_id(my_chat_id)
+                my_sheet=self.google_sheets.create_sheet(sheet["sheet_id"],"Доход")
+                row=self.google_sheets.get_row_number_by_cell_content(my_sheet,replied_message_text,mapping['payment_message'])
+                if row==False:
+                    
+                    row_data = {
+                            mapping['date_today']:datetime.datetime.now().strftime('%d.%m.%Y'),
+                            mapping['payment_column']:lead_data['amount'],
+                            mapping['payment_date']: lead_data['date'],
+                            mapping['payment_message']: replied_message_text,
+                            mapping['paymentmethod']:mapping['paymentmethod_name']}
+                    print(row_data)
+                    self.google_sheets.add_row(my_sheet,row_data)
+
                 #*Make sure that payment text are in db
                 max_retries = 5
                 retries = 0
@@ -180,7 +201,6 @@ class MyBot:
                                                                     
                                     order_approve_markup = InlineKeyboardMarkup([[InlineKeyboardButton("Да", callback_data=callback_data_yes),
                                                                                 InlineKeyboardButton("Нет", callback_data='no'),InlineKeyboardButton("Частично", callback_data=callback_data_partly)]])
-                                    print(lead_ids_list)
                                     if lead_id in lead_ids_list:
                                         context.bot.send_message(chat_id=update.effective_chat.id, text=f"Для сделки {lead_id} уже внесена оплата")
                                     else : 
