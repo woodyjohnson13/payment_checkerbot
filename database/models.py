@@ -25,5 +25,17 @@ class PaymentText(Base):
     text=Column(String)
     
 
+class Chat(Base):
+    __tablename__ = 'bot_chats_and_sheets'
+
+    id = Column(Integer, primary_key=True)
+    chat_id=Column(String)
+    sheet_id = Column(String)
 
 
+class ProcessedLead(Base):
+    __tablename__ = 'processed_lead_ids'
+
+    id = Column(Integer, primary_key=True)
+    lead_id=Column(String)
+    partly_payed = Column(Integer)

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 #loading dotenv files
 load_dotenv(override=True)
 
-bot_token = os.getenv('BOT_TOKEN')
+bot_token = os.getenv('BOT_TOKEN')  
 
 def main():
     bot = MyBot(bot_token)
